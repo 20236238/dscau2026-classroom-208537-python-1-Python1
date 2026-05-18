@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import time
 import array
 
-# 랜덤 시드 고정 (결과 재현성 확보)
 np.random.seed(42)
 
 # ============================================================
