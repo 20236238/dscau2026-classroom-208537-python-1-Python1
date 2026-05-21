@@ -36,14 +36,18 @@ for _ in range(1000):
     t0 = time.perf_counter(); movingAverages1(X, n, k); t1 = time.perf_counter()
     t2 = time.perf_counter(); movingAverages2(X, n, k); t3 = time.perf_counter()
     time1, time2 = t1 - t0, t3 - t2
-    if time2 > 0: ratios_1a.append(time1 / time2)
+    if time2 > 0:
+        ratios_1a.append(time1 / time2)
 
 plt.figure(figsize=(8, 5))
 plt.hist(ratios_1a, bins=40, color='steelblue', edgecolor='black')
-plt.xlabel('Time Ratio (slow / fast)'); plt.ylabel('Frequency')
+plt.xlabel('Time Ratio (slow / fast)')
+plt.ylabel('Frequency')
 plt.title('Histogram of Time Ratios\n(movingAverages1 / movingAverages2), n=2^5, k=2^4')
-plt.tight_layout(); plt.savefig('./ratio_hist2.jpg'); plt.close()
-print(f"[1-1a] 저장 완료: ratio_hist2.jpg")
+plt.tight_layout()
+plt.savefig('./ratio_hist2.jpg')
+plt.close()
+print(f"[1-1a] Mean ratio: {float(np.mean(ratios_1a)):.4f}, Median ratio: {float(np.median(ratios_1a)):.4f}")
 
 # --- 문제 1-1b ---
 input_sizes = [2**4, 2**5, 2**6, 2**7, 2**8]
@@ -57,18 +61,25 @@ for n in input_sizes:
         t0 = time.perf_counter(); movingAverages1(X, n, k); t1 = time.perf_counter()
         t2 = time.perf_counter(); movingAverages2(X, n, k); t3 = time.perf_counter()
         time1, time2 = t1 - t0, t3 - t2
-        if time2 > 0: ratios_1b.append(time1 / time2)
-    min_ratios.append(np.min(ratios_1b)); max_ratios.append(np.max(ratios_1b)); avg_ratios.append(np.mean(ratios_1b))
+        if time2 > 0:
+            ratios_1b.append(time1 / time2)
+    min_ratios.append(float(np.min(ratios_1b)))
+    max_ratios.append(float(np.max(ratios_1b)))
+    avg_ratios.append(float(np.mean(ratios_1b)))
 
 plt.figure(figsize=(8, 5))
 plt.plot(input_sizes, min_ratios, 'b-o', label='Min Ratio')
 plt.plot(input_sizes, avg_ratios, 'g-o', label='Avg Ratio')
 plt.plot(input_sizes, max_ratios, 'r-o', label='Max Ratio')
-plt.xlabel('n (input size)'); plt.ylabel('Time Ratio (slow / fast)')
+plt.xlabel('n (input size)')
+plt.ylabel('Time Ratio (slow / fast)')
 plt.title('Time Ratio vs n (movingAverages1/2), k=2^3')
 plt.xticks(input_sizes, [f'$2^{{{i+4}}}$' for i in range(5)])
-plt.legend(); plt.tight_layout(); plt.savefig('./ratio_plot2.jpg'); plt.close()
-print(f"[1-1b] 저장 완료: ratio_plot2.jpg")
+plt.legend()
+plt.tight_layout()
+plt.savefig('./ratio_plot2.jpg')
+plt.close()
+print(f"[1-1b] n={[2**i for i in range(4,9)]}, avg ratios: {[round(r,4) for r in avg_ratios]}")
 
 
 # ============================================================
@@ -80,20 +91,25 @@ def countOnesButSlow(A, n):
     for i in range(n):
         j = 0
         while j < n and A[i, j] == 1:
-            c += 1; j += 1
+            c += 1
+            j += 1
     return c
 
 def countOnes(A, n):
     c, row, col = 0, 0, n - 1
     while row < n and col >= 0:
-        if A[row, col] == 1: c += col + 1; row += 1
-        else: col -= 1
+        if A[row, col] == 1:
+            c += col + 1
+            row += 1
+        else:
+            col -= 1
     return c
 
 def generate_row_sorted_matrix(n):
     A = np.zeros((n, n), dtype=int)
     ones_counts = sorted(np.random.randint(0, n + 1, size=n), reverse=True)
-    for i, cnt in enumerate(ones_counts): A[i, :cnt] = 1
+    for i, cnt in enumerate(ones_counts):
+        A[i, :cnt] = 1
     return A
 
 # --- 문제 1-2a ---
@@ -103,14 +119,18 @@ for _ in range(1000):
     A = generate_row_sorted_matrix(n)
     t0 = time.perf_counter(); countOnesButSlow(A, n); t1 = time.perf_counter()
     t2 = time.perf_counter(); countOnes(A, n); t3 = time.perf_counter()
-    if (t3 - t2) > 0: ratios_2a.append((t1 - t0) / (t3 - t2))
+    if (t3 - t2) > 0:
+        ratios_2a.append((t1 - t0) / (t3 - t2))
 
 plt.figure(figsize=(8, 5))
 plt.hist(ratios_2a, bins=40, color='darkorange', edgecolor='black')
-plt.xlabel('Time Ratio (slow / fast)'); plt.ylabel('Frequency')
+plt.xlabel('Time Ratio (slow / fast)')
+plt.ylabel('Frequency')
 plt.title('Histogram of Time Ratios\n(countOnesButSlow / countOnes), n=2^6')
-plt.tight_layout(); plt.savefig('./ratio_hist4.jpg'); plt.close()
-print(f"\n[1-2a] 저장 완료: ratio_hist4.jpg")
+plt.tight_layout()
+plt.savefig('./ratio_hist4.jpg')
+plt.close()
+print(f"\n[1-2a] Mean ratio: {float(np.mean(ratios_2a)):.4f}, Median ratio: {float(np.median(ratios_2a)):.4f}")
 
 # --- 문제 1-2b ---
 input_sizes = [2**4, 2**5, 2**6, 2**7, 2**8]
@@ -121,60 +141,72 @@ for n in input_sizes:
         A = generate_row_sorted_matrix(n)
         t0 = time.perf_counter(); countOnesButSlow(A, n); t1 = time.perf_counter()
         t2 = time.perf_counter(); countOnes(A, n); t3 = time.perf_counter()
-        if (t3 - t2) > 0: ratios_2b.append((t1 - t0) / (t3 - t2))
-    min_r2.append(np.min(ratios_2b)); max_r2.append(np.max(ratios_2b)); avg_r2.append(np.mean(ratios_2b))
+        if (t3 - t2) > 0:
+            ratios_2b.append((t1 - t0) / (t3 - t2))
+    min_r2.append(float(np.min(ratios_2b)))
+    max_r2.append(float(np.max(ratios_2b)))
+    avg_r2.append(float(np.mean(ratios_2b)))
 
 plt.figure(figsize=(8, 5))
 plt.plot(input_sizes, min_r2, 'b-o', label='Min Ratio')
 plt.plot(input_sizes, avg_r2, 'g-o', label='Avg Ratio')
 plt.plot(input_sizes, max_r2, 'r-o', label='Max Ratio')
-plt.xlabel('n (input size)'); plt.ylabel('Time Ratio (slow / fast)')
+plt.xlabel('n (input size)')
+plt.ylabel('Time Ratio (slow / fast)')
 plt.title('Time Ratio vs n (countOnesButSlow / countOnes)')
 plt.xticks(input_sizes, [f'$2^{{{i+4}}}$' for i in range(5)])
-plt.legend(); plt.tight_layout(); plt.savefig('./ratio_plot4.jpg'); plt.close()
-print(f"[1-2b] 저장 완료: ratio_plot4.jpg")
+plt.legend()
+plt.tight_layout()
+plt.savefig('./ratio_plot4.jpg')
+plt.close()
+print(f"[1-2b] n={[2**i for i in range(4,9)]}, avg ratios: {[round(r,4) for r in avg_r2]}")
 
 
 # ============================================================
-# 문제 2: 재귀 (Recursion) 
+# 문제 2: 재귀 (Recursion)
 # ============================================================
 
 def gcd1(a, b):
-    print(f"  computing gcd1({a}, {b})")  
-    if b == 0: return a
+    print(f"computing gcd1({a}, {b})")
+    if b == 0:
+        return a
     return gcd1(b, a % b)
 
 def gcd2(a, b):
-    print(f"  computing gcd2({a}, {b})")  
-    if a == b: return a
-    if a > b: return gcd2(a - b, b)
-    else: return gcd2(a, b - a)
+    print(f"computing gcd2({a}, {b})")
+    if a == b:
+        return a
+    if a > b:
+        return gcd2(a - b, b)
+    else:
+        return gcd2(a, b - a)
 
 print("\n[2-1a] gcd(493, 33)")
 res_gcd1_a = gcd1(493, 33)
-print(" -----")
+print(f"and gcd1(493, 33) is {res_gcd1_a}")
 res_gcd2_a = gcd2(493, 33)
-print(f"  -> Result: gcd1 is {res_gcd1_a}, gcd2 is {res_gcd2_a}")
+print(f"and gcd2(493, 33) is {res_gcd2_a}")
 
 print("\n[2-1b] gcd(225, 13)")
 res_gcd1_b = gcd1(225, 13)
-print(" -----")
+print(f"and gcd1(225, 13) is {res_gcd1_b}")
 res_gcd2_b = gcd2(225, 13)
-print(f"  -> Result: gcd1 is {res_gcd1_b}, gcd2 is {res_gcd2_b}")
+print(f"and gcd2(225, 13) is {res_gcd2_b}")
 
 def divide(a, b):
-    print(f"  computing divide({a}, {b})")  
-    if a < b: return (0, a)
+    print(f"computing divide({a}, {b})")
+    if a < b:
+        return (0, a)
     q, r = divide(a - b, b)
     return (q + 1, r)
 
 print("\n[2-2a] divide(413, 31)")
 res_div_a = divide(413, 31)
-print(f"  -> Result: quotient={res_div_a[0]}, remainder={res_div_a[1]}")
+print(f"and divide(413, 31) is {res_div_a}")
 
 print("\n[2-2b] divide(325, 113)")
 res_div_b = divide(325, 113)
-print(f"  -> Result: quotient={res_div_b[0]}, remainder={res_div_b[1]}")
+print(f"and divide(325, 113) is {res_div_b}")
 
 
 # ============================================================
@@ -194,18 +226,24 @@ ratios1 = run_sparse_experiment_optimized((1, 5))
 plt.figure(figsize=(8, 6))
 plt.hist(ratios1, bins=50, color='royalblue', edgecolor='black')
 plt.title('Ratio of Offsets\n(1~5 ones)')
-plt.xlabel('Offset Ratio (Dense / Sparse)'); plt.ylabel('Frequency')
-plt.tight_layout(); plt.savefig('./sparse_hist1.jpg'); plt.close()
-print("[3-1] sparse_hist1.jpg 저장 완료")
+plt.xlabel('Offset Ratio (Dense / Sparse)')
+plt.ylabel('Frequency')
+plt.tight_layout()
+plt.savefig('./sparse_hist1.jpg')
+plt.close()
+print(f"[3-1] Mean ratio (1~5 ones): {float(np.mean(ratios1)):.4f}")
 
 print("\n[3-1] 실험 중 (10~20개 1s)...")
 ratios2 = run_sparse_experiment_optimized((10, 20))
 plt.figure(figsize=(8, 6))
 plt.hist(ratios2, bins=50, color='tomato', edgecolor='black')
 plt.title('Ratio of Offsets\n(10~20 ones)')
-plt.xlabel('Offset Ratio (Dense / Sparse)'); plt.ylabel('Frequency')
-plt.tight_layout(); plt.savefig('./sparse_hist2.jpg'); plt.close()
-print("[3-1] sparse_hist2.jpg 저장 완료")
+plt.xlabel('Offset Ratio (Dense / Sparse)')
+plt.ylabel('Frequency')
+plt.tight_layout()
+plt.savefig('./sparse_hist2.jpg')
+plt.close()
+print(f"[3-1] Mean ratio (10~20 ones): {float(np.mean(ratios2)):.4f}")
 
 
 # ============================================================
@@ -227,28 +265,38 @@ times_array_del = []
 
 for _ in range(1000):
     lst = list(range(n))
-    t0 = time.perf_counter(); delete_middle_list(lst); t1 = time.perf_counter()
+    t0 = time.perf_counter()
+    delete_middle_list(lst)
+    t1 = time.perf_counter()
     times_list_del.append(t1 - t0)
-    
+
     arr = array.array('i', range(n))
-    t2 = time.perf_counter(); delete_middle_array(arr); t3 = time.perf_counter()
+    t2 = time.perf_counter()
+    delete_middle_array(arr)
+    t3 = time.perf_counter()
     times_array_del.append(t3 - t2)
 
-# 4.1 (a) 저장
+# 4.1 (a)
 plt.figure(figsize=(8, 5))
 plt.hist(times_list_del, bins=40, color='steelblue', edgecolor='black')
-plt.xlabel('Elapsed Time (s)'); plt.ylabel('Frequency')
+plt.xlabel('Elapsed Time (s)')
+plt.ylabel('Frequency')
 plt.title('Problem 4.1 (a): Histogram of List Deletion Time (n=100)')
-plt.tight_layout(); plt.savefig('./histListDel.jpg'); plt.close()
-print("\n[Problem 4.1 (a)] histListDel.jpg 저장 완료")
+plt.tight_layout()
+plt.savefig('./histListDel.jpg')
+plt.close()
+print(f"\n[Problem 4.1 (a)] Mean list deletion time: {float(np.mean(times_list_del)):.8f}s")
 
-# 4.1 (b) 저장
+# 4.1 (b)
 plt.figure(figsize=(8, 5))
 plt.hist(times_array_del, bins=40, color='darkorange', edgecolor='black')
-plt.xlabel('Elapsed Time (s)'); plt.ylabel('Frequency')
+plt.xlabel('Elapsed Time (s)')
+plt.ylabel('Frequency')
 plt.title('Problem 4.1 (b): Histogram of Array Deletion Time (n=100)')
-plt.tight_layout(); plt.savefig('./histArrayDel.jpg'); plt.close()
-print("[Problem 4.1 (b)] histArrayDel.jpg 저장 완료")
+plt.tight_layout()
+plt.savefig('./histArrayDel.jpg')
+plt.close()
+print(f"[Problem 4.1 (b)] Mean array deletion time: {float(np.mean(times_array_del)):.8f}s")
 
 # ------------------------------------------------------------
 # 4.1 (c): List vs Array Deletion Ratio
@@ -260,25 +308,35 @@ for n_size in sizes_4:
     ratios = []
     for _ in range(1000):
         lst = list(range(n_size))
-        t0 = time.perf_counter(); delete_middle_list(lst); t1 = time.perf_counter()
-        
+        t0 = time.perf_counter()
+        delete_middle_list(lst)
+        t1 = time.perf_counter()
+
         arr = array.array('i', range(n_size))
-        t2 = time.perf_counter(); delete_middle_array(arr); t3 = time.perf_counter()
-        
+        t2 = time.perf_counter()
+        delete_middle_array(arr)
+        t3 = time.perf_counter()
+
         if (t3 - t2) > 0 and (t1 - t0) > 0:
             ratios.append((t1 - t0) / (t3 - t2))
-            
-    min_r4.append(np.min(ratios)); avg_r4.append(np.mean(ratios)); max_r4.append(np.max(ratios))
+
+    min_r4.append(float(np.min(ratios)))
+    avg_r4.append(float(np.mean(ratios)))
+    max_r4.append(float(np.max(ratios)))
 
 plt.figure(figsize=(8, 5))
 plt.plot(sizes_4, min_r4, 'b-o', label='Min')
 plt.plot(sizes_4, avg_r4, 'g-o', label='Avg')
 plt.plot(sizes_4, max_r4, 'r-o', label='Max')
-plt.xlabel('n (Elements)'); plt.ylabel('Ratio (List Time / Array Time)')
+plt.xlabel('n (Elements)')
+plt.ylabel('Ratio (List Time / Array Time)')
 plt.title('Problem 4.1 (c): List vs Array Deletion Time Ratio')
-plt.xticks(sizes_4); plt.legend(); plt.tight_layout()
-plt.savefig('./ListVsArrayDel.jpg'); plt.close()
-print("[Problem 4.1 (c)] ListVsArrayDel.jpg 저장 완료")
+plt.xticks(sizes_4)
+plt.legend()
+plt.tight_layout()
+plt.savefig('./ListVsArrayDel.jpg')
+plt.close()
+print(f"[Problem 4.1 (c)] n={sizes_4}, avg ratios: {[round(r,4) for r in avg_r4]}")
 
 
 # ------------------------------------------------------------
@@ -297,7 +355,8 @@ def SharingList(A):
                 result[g].append(e)
     return result
 
-print("\n[Problem 4.2 (a)] SharingList(A) 출력 결과:\n", SharingList(A_share))
+print(f"\n[Problem 4.2 (a)] SharingList(A) result:")
+print(SharingList(A_share))
 
 # 4.2 (b)
 def FindPopularList(A):
@@ -305,15 +364,16 @@ def FindPopularList(A):
     n_elements = A.shape[0]
     counts = [0] * n_elements
     for group in sharing:
-        for e in group: counts[e] += 1
+        for e in group:
+            counts[e] += 1
     return counts.index(max(counts))
 
 def FindPopularArray(A):
     counts = np.sum(A, axis=1)
     return int(np.argmax(counts))
 
-print(f"  [확인용] FindPopularList  결과: {FindPopularList(A_share)}")
-print(f"  [확인용] FindPopularArray 결과: {FindPopularArray(A_share)}")
+print(f"[Problem 4.2 (b)] FindPopularList result: {FindPopularList(A_share)}")
+print(f"[Problem 4.2 (b)] FindPopularArray result: {FindPopularArray(A_share)}")
 
 times_list_sh, times_array_sh = [], []
 for _ in range(1000):
@@ -325,10 +385,13 @@ for _ in range(1000):
 ratios_sh = [l/a for l, a in zip(times_list_sh, times_array_sh) if a > 0]
 plt.figure(figsize=(8, 5))
 plt.hist(ratios_sh, bins=40, color='mediumpurple', edgecolor='black')
-plt.xlabel('Ratio (List Time / Array Time)'); plt.ylabel('Frequency')
+plt.xlabel('Ratio (List Time / Array Time)')
+plt.ylabel('Frequency')
 plt.title('Problem 4.2 (b): Histogram of FindPopular Time Ratio\n(List / Array)')
-plt.tight_layout(); plt.savefig('./HistSharing.jpg'); plt.close()
-print("[Problem 4.2 (b)] HistSharing.jpg 저장 완료")
+plt.tight_layout()
+plt.savefig('./HistSharing.jpg')
+plt.close()
+print(f"[Problem 4.2 (b)] Mean ratio (List/Array): {float(np.mean(ratios_sh)):.4f}")
 
 
 # ============================================================
@@ -343,49 +406,70 @@ class Node:
 class OrderedSet:
     def __init__(self):
         self.head = None
+
     def add(self, e):
         new_node = Node(e)
         if self.head is None or self.head.elem > e:
-            new_node.next = self.head; self.head = new_node; return
+            new_node.next = self.head
+            self.head = new_node
+            return
         cur = self.head
-        while cur.next and cur.next.elem < e: cur = cur.next
-        if cur.next and cur.next.elem == e: return
-        new_node.next = cur.next; cur.next = new_node
+        while cur.next and cur.next.elem < e:
+            cur = cur.next
+        if cur.next and cur.next.elem == e:
+            return
+        new_node.next = cur.next
+        cur.next = new_node
+
     def member(self, e):
-        if self.head is None: return False
+        if self.head is None:
+            return False
         p = self.head
         while True:
             a = p.elem
             if a < e:
-                if p.next is None: return False
+                if p.next is None:
+                    return False
                 p = p.next
-            elif a > e: return False
-            else: return True
+            elif a > e:
+                return False
+            else:
+                return True
+
     def is_empty(self):
         return self.head is None
 
 def Subset(A, B):
-    if A.is_empty(): return True
+    if A.is_empty():
+        return True
     p = A.head
     while True:
         if B.member(p.elem):
-            if p.next is None: return True
+            if p.next is None:
+                return True
             p = p.next
-        else: return False
+        else:
+            return False
 
 def SubsetFast(A, B):
-    if A.is_empty(): return True
+    if A.is_empty():
+        return True
     p_a, p_b = A.head, B.head
     while p_a is not None:
-        if p_b is None: return False
-        if p_b.elem < p_a.elem: p_b = p_b.next
-        elif p_b.elem == p_a.elem: p_a, p_b = p_a.next, p_b.next
-        else: return False
+        if p_b is None:
+            return False
+        if p_b.elem < p_a.elem:
+            p_b = p_b.next
+        elif p_b.elem == p_a.elem:
+            p_a, p_b = p_a.next, p_b.next
+        else:
+            return False
     return True
 
 def make_ordered_set(elements):
     s = OrderedSet()
-    for e in elements: s.add(e)
+    for e in elements:
+        s.add(e)
     return s
 
 A_set = make_ordered_set([0, 9])
@@ -399,17 +483,24 @@ for n_size in sizes_5:
         B_set = make_ordered_set(elems.tolist())
         t0 = time.perf_counter(); Subset(A_set, B_set); t1 = time.perf_counter()
         t2 = time.perf_counter(); SubsetFast(A_set, B_set); t3 = time.perf_counter()
-        if (t3 - t2) > 0: ratios.append((t1 - t0) / (t3 - t2))
-    min_r5.append(np.min(ratios)); avg_r5.append(np.mean(ratios)); max_r5.append(np.max(ratios))
+        if (t3 - t2) > 0:
+            ratios.append((t1 - t0) / (t3 - t2))
+    min_r5.append(float(np.min(ratios)))
+    avg_r5.append(float(np.mean(ratios)))
+    max_r5.append(float(np.max(ratios)))
 
 plt.figure(figsize=(8, 5))
 plt.plot(sizes_5, min_r5, 'b-o', label='Min')
 plt.plot(sizes_5, avg_r5, 'g-o', label='Avg')
 plt.plot(sizes_5, max_r5, 'r-o', label='Max')
-plt.xlabel('n (Size of B)'); plt.ylabel('Time Ratio (Subset / SubsetFast)')
+plt.xlabel('n (Size of B)')
+plt.ylabel('Time Ratio (Subset / SubsetFast)')
 plt.title('Problem 5: Subset vs SubsetFast Time Ratio\n(A = {0, 9})')
-plt.xticks(sizes_5); plt.legend(); plt.tight_layout()
-plt.savefig('./Subset.jpg'); plt.close()
-print("\n[Problem 5] Subset.jpg 저장 완료")
+plt.xticks(sizes_5)
+plt.legend()
+plt.tight_layout()
+plt.savefig('./Subset.jpg')
+plt.close()
+print(f"\n[Problem 5] n={sizes_5}, avg ratios: {[round(r,4) for r in avg_r5]}")
 
 print("\n===== 모든 문제 출력 완료 =====")
